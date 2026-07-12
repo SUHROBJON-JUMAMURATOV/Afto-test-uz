@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avtotest — PDD imtihoniga tayyorgarlik</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container center" style="padding-top: 60px;">
+    <h1 class="display" style="font-size: 34px; color: var(--sign-yellow);">AVTOTEST</h1>
+    <p class="muted" style="margin: 10px 0 30px;">Haydovchilik guvohnomasi PDD imtihoniga onlayn tayyorgarlik. Har qanday joyda, hatto internetsiz ham mashq qiling.</p>
+
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <svg width="140" height="140">
+          <circle class="gauge-track" cx="70" cy="70" r="60"></circle>
+          <circle class="gauge-progress" cx="70" cy="70" r="60"
+            style="stroke-dasharray: 377; stroke-dashoffset: 100;"></circle>
+        </svg>
+        <div class="gauge-label">
+          <div class="num" style="color: var(--sign-yellow);">90%</div>
+          <div class="of">o'tish balli</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="location.href='login.html'">Boshlash</button>
+    <p class="muted" style="margin-top: 20px;">40+ bilet · Yo'l belgilari · Real imtihon rejimi</p>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>

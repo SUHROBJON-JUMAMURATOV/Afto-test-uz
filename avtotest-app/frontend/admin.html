@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin panel — Avtotest</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">ADMIN <span>PANEL</span></div>
+  </div>
+
+  <div class="container" style="max-width: 640px;">
+
+    <!-- ===== ADMIN KALITI ===== -->
+    <div class="card" id="adminAuthCard">
+      <div class="card-title">Admin kaliti</div>
+      <div class="field" style="margin-top:10px;">
+        <input type="password" id="adminSecretInput" placeholder="ADMIN_SECRET (.env dagi)">
+      </div>
+      <button class="btn btn-primary" onclick="saveAdminSecret()">Kirish</button>
+    </div>
+
+    <div id="adminContent" style="display:none;">
+
+      <!-- ===== KATEGORIYA QO'SHISH ===== -->
+      <div class="card">
+        <div class="card-title">1. Kategoriya qo'shish</div>
+        <div class="field" style="margin-top:10px;">
+          <label>Nomi</label>
+          <input type="text" id="categoryName" placeholder="Masalan: Yo'l belgilari">
+        </div>
+        <button class="btn btn-secondary" onclick="addCategory()">Qo'shish</button>
+        <p id="categoryMsg" class="success-msg"></p>
+      </div>
+
+      <!-- ===== TEST/BILET QO'SHISH ===== -->
+      <div class="card">
+        <div class="card-title">2. Test (bilet) qo'shish</div>
+        <div class="field" style="margin-top:10px;">
+          <label>Kategoriya</label>
+          <select id="testCategory"></select>
+        </div>
+        <div class="field">
+          <label>Test nomi</label>
+          <input type="text" id="testTitle" placeholder="Masalan: 1-bilet">
+        </div>
+        <div class="field">
+          <label><input type="checkbox" id="testPremium"> Faqat Pro foydalanuvchilar uchun</label>
+        </div>
+        <button class="btn btn-secondary" onclick="addTest()">Qo'shish</button>
+        <p id="testMsg" class="success-msg"></p>
+      </div>
+
+      <!-- ===== SAVOL QO'SHISH ===== -->
+      <div class="card">
+        <div class="card-title">3. Savol qo'shish</div>
+        <div class="field" style="margin-top:10px;">
+          <label>Test</label>
+          <select id="questionTest"></select>
+        </div>
+        <div class="field">
+          <label>Savol matni</label>
+          <textarea id="questionText" rows="3" placeholder="Savol matnini kiriting"></textarea>
+        </div>
+        <div class="field">
+          <label>Rasm URL (ixtiyoriy — yo'l belgisi rasmi)</label>
+          <input type="text" id="questionImage" placeholder="https://...">
+        </div>
+
+        <div id="answersInputs">
+          <div class="field">
+            <label>Javob 1</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" class="answerText" style="flex:1;">
+              <label style="display:flex; align-items:center; gap:4px; white-space:nowrap;"><input type="radio" name="correctAnswer" value="0"> To'g'ri</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Javob 2</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" class="answerText" style="flex:1;">
+              <label style="display:flex; align-items:center; gap:4px; white-space:nowrap;"><input type="radio" name="correctAnswer" value="1"> To'g'ri</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Javob 3</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" class="answerText" style="flex:1;">
+              <label style="display:flex; align-items:center; gap:4px; white-space:nowrap;"><input type="radio" name="correctAnswer" value="2"> To'g'ri</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Javob 4</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" class="answerText" style="flex:1;">
+              <label style="display:flex; align-items:center; gap:4px; white-space:nowrap;"><input type="radio" name="correctAnswer" value="3"> To'g'ri</label>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="addQuestion()">Savolni saqlash</button>
+        <p id="questionMsg" class="success-msg"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    let adminSecret = null;
+
+    function saveAdminSecret() {
+      adminSecret = document.getElementById('adminSecretInput').value;
+      document.getElementById('adminAuthCard').style.display = 'none';
+      document.getElementById('adminContent').style.display = 'block';
+      loadCategoriesAndTests();
+    }
+
+    async function adminFetch(path, body) {
+      const res = await fetch(`${API_BASE}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Xatolik');
+      return data;
+    }
+
+    async function loadCategoriesAndTests() {
+      const categories = await fetch(`${API_BASE}/tests/categories`).then(r => r.json());
+      const catSelect = document.getElementById('testCategory');
+      catSelect.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+      const tests = await fetch(`${API_BASE}/tests`).then(r => r.json());
+      const testSelect = document.getElementById('questionTest');
+      testSelect.innerHTML = tests.map(t => `<option value="${t.id}">${t.title}</option>`).join('');
+    }
+
+    async function addCategory() {
+      const name = document.getElementById('categoryName').value.trim();
+      if (!name) return;
+      try {
+        await adminFetch('/tests/admin/categories', { name });
+        document.getElementById('categoryMsg').textContent = "Qo'shildi ✓";
+        document.getElementById('categoryName').value = '';
+        loadCategoriesAndTests();
+      } catch (e) { alert(e.message); }
+    }
+
+    async function addTest() {
+      const category_id = document.getElementById('testCategory').value;
+      const title = document.getElementById('testTitle').value.trim();
+      const is_premium = document.getElementById('testPremium').checked;
+      if (!title) return;
+      try {
+        await adminFetch('/tests/admin/tests', { category_id, title, is_premium });
+        document.getElementById('testMsg').textContent = "Qo'shildi ✓";
+        document.getElementById('testTitle').value = '';
+        loadCategoriesAndTests();
+      } catch (e) { alert(e.message); }
+    }
+
+    async function addQuestion() {
+      const test_id = document.getElementById('questionTest').value;
+      const question_text = document.getElementById('questionText').value.trim();
+      const image_url = document.getElementById('questionImage').value.trim();
+      const answerInputs = document.querySelectorAll('.answerText');
+      const correctIndex = document.querySelector('input[name="correctAnswer"]:checked')?.value;
+
+      if (!question_text || correctIndex === undefined) {
+        alert("Savol matni va to'g'ri javobni belgilang");
+        return;
+      }
+
+      const answers = Array.from(answerInputs).map((el, i) => ({
+        answer_text: el.value.trim(),
+        is_correct: String(i) === correctIndex
+      })).filter(a => a.answer_text);
+
+      try {
+        await adminFetch('/tests/admin/questions', { test_id, question_text, image_url, order_num: Date.now(), answers });
+        document.getElementById('questionMsg').textContent = "Savol saqlandi ✓";
+        document.getElementById('questionText').value = '';
+        document.getElementById('questionImage').value = '';
+        answerInputs.forEach(el => el.value = '');
+      } catch (e) { alert(e.message); }
+    }
+  </script>
+</body>
+</html>

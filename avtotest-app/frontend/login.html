@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kirish — Avtotest</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">AVTO<span>TEST</span></div>
+  </div>
+
+  <div class="container">
+    <h2 style="margin: 20px 0 24px;">Tizimga kirish</h2>
+
+    <!-- ===== GOOGLE LOGIN ===== -->
+    <div class="card">
+      <div class="card-title">Google orqali</div>
+      <div class="card-sub" style="margin-bottom: 14px;">Bir bosishda ro'yxatdan o'ting</div>
+
+      <!-- Google Identity Services shu joyga tugma chizadi -->
+      <div id="g_id_onload"
+           data-client_id="904065907371-n2le4ttj8cr0rh5e8d49vkc0mpkmpd6e.apps.googleusercontent.com"
+           data-callback="handleGoogleCredential"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin" data-type="standard" data-theme="filled_white" data-size="large"
+           data-width="100%" data-text="continue_with"></div>
+
+      <p id="authError" class="error-msg"></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ===== SMS LOGIN ===== -->
+    <div class="card">
+      <div class="card-title">Telefon raqam orqali</div>
+
+      <div id="step-phone">
+        <div class="field" style="margin-top: 14px;">
+          <label>Telefon raqam</label>
+          <input type="tel" id="phoneInput" placeholder="90 123 45 67" inputmode="numeric">
+        </div>
+        <button class="btn btn-primary" id="sendCodeBtn" onclick="sendSmsCode()">SMS kod olish</button>
+        <p id="phoneError" class="error-msg"></p>
+      </div>
+
+      <div id="step-code" style="display:none;">
+        <div class="field" style="margin-top: 14px;">
+          <label>Ismingiz</label>
+          <input type="text" id="nameInput" placeholder="Ism Familiya">
+        </div>
+        <div class="field">
+          <label>SMS orqali kelgan kod</label>
+          <input type="text" id="codeInput" inputmode="numeric" maxlength="6" placeholder="123456">
+        </div>
+        <button class="btn btn-primary" onclick="verifySmsCode()">Tasdiqlash</button>
+        <p id="codeError" class="error-msg"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

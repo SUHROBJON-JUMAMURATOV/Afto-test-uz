@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Testlar — Avtotest</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">AVTO<span>TEST</span></div>
+    <a href="pricing.html" class="badge-pro">PRO OLISH</a>
+  </div>
+
+  <div class="container">
+    <h2 style="margin: 16px 0;">Biletlar</h2>
+    <div id="testsContainer"><p class="muted">Yuklanmoqda...</p></div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="inner" style="display:flex; gap:10px;">
+      <button class="btn btn-secondary" onclick="logout()">Chiqish</button>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    async function loadTests() {
+      if (!requireLoginOrRedirect()) return;
+      try {
+        const tests = await apiFetch('/tests');
+        const container = document.getElementById('testsContainer');
+        if (tests.length === 0) {
+          container.innerHTML = '<div class="card center muted">Hozircha testlar qo\'shilmagan. Admin panel orqali qo\'shing.</div>';
+          return;
+        }
+        container.innerHTML = '';
+        tests.forEach((t) => {
+          const div = document.createElement('div');
+          div.className = 'card';
+          div.style.cursor = 'pointer';
+          div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div class="card-title">${t.title} ${t.is_premium ? '<span class="badge-pro">PRO</span>' : ''}</div>
+                <div class="card-sub">${t.question_count} ta savol</div>
+              </div>
+              <div style="font-size:22px;">→</div>
+            </div>
+          `;
+          div.onclick = () => location.href = `quiz.html?test_id=${t.id}`;
+          container.appendChild(div);
+        });
+      } catch (e) {
+        document.getElementById('testsContainer').innerHTML = `<p class="error-msg">${e.message}</p>`;
+      }
+    }
+    loadTests();
+  </script>
+</body>
+</html>

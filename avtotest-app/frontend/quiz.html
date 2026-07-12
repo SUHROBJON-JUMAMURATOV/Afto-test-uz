@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Test yechish — Avtotest</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="topbar">
+    <a href="tests.html" style="font-size:20px;">←</a>
+    <div id="testTitle" class="logo" style="font-size:16px;"></div>
+    <div style="width:20px;"></div>
+  </div>
+
+  <div class="container" id="quizScreen">
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <svg width="140" height="140">
+          <circle class="gauge-track" cx="70" cy="70" r="60"></circle>
+          <circle id="gaugeProgress" class="gauge-progress" cx="70" cy="70" r="60"></circle>
+        </svg>
+        <div class="gauge-label">
+          <div class="num"><span id="gaugeNum">1</span></div>
+          <div class="of" id="gaugeOf">/ 20</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="quizContainer" class="card">
+      <img id="questionImage" class="question-image" style="display:none;">
+      <div id="questionText" class="question-text"></div>
+      <div id="answersContainer"></div>
+    </div>
+  </div>
+
+  <div id="resultScreen" class="container" style="display:none;"></div>
+
+  <div class="bottom-bar">
+    <div class="inner" style="display:flex; gap:10px;">
+      <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" style="flex:1;">Orqaga</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="flex:2;">Keyingi</button>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/quiz.js"></script>
+  <script>initQuiz();</script>
+</body>
+</html>
